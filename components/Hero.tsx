@@ -5,7 +5,6 @@ import { useRef } from "react";
 import { EVENT } from "@/lib/event";
 import Diya from "./art/Diya";
 import { LanternField } from "./art/Lanterns";
-import Mandala from "./art/Mandala";
 import Sparkles from "./art/Sparkles";
 import StringLights from "./art/StringLights";
 import Countdown from "./Countdown";
@@ -39,8 +38,6 @@ export default function Hero() {
   const yTitle = useTransform(scrollYProgress, [0, 1], [0, 260]);
   const titleOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
   const titleScale = useTransform(scrollYProgress, [0, 1], [1, 0.85]);
-  const mandalaScale = useTransform(scrollYProgress, [0, 1], [1, 1.5]);
-  const mandalaRotate = useTransform(scrollYProgress, [0, 1], [0, 90]);
 
   // Mouse parallax
   const mx = useMotionValue(0);
@@ -68,13 +65,6 @@ export default function Hero() {
     >
       <motion.div style={{ y: yFar }} className="absolute inset-0">
         <Sparkles count={70} seed={4} />
-      </motion.div>
-
-      <motion.div style={{ y: yFar, x: xFar, scale: mandalaScale, rotate: mandalaRotate }} className="absolute left-1/2 top-1/2 h-[min(130vw,820px)] w-[min(130vw,820px)] -translate-x-1/2 -translate-y-1/2 text-gold/25">
-        <Mandala className="spin-slow h-full w-full" />
-      </motion.div>
-      <motion.div style={{ y: yMid, scale: mandalaScale }} className="absolute left-1/2 top-1/2 h-[min(70vw,420px)] w-[min(70vw,420px)] -translate-x-1/2 -translate-y-1/2 text-rani/30">
-        <Mandala className="spin-slower h-full w-full" strokeWidth={1.2} />
       </motion.div>
 
       <motion.div style={{ y: yFar, x: xFar }} className="absolute inset-0">
@@ -143,7 +133,7 @@ export default function Hero() {
           transition={{ delay: INTRO_DELAY + 1.1 }}
           className="mt-4 max-w-md text-base text-cream/75"
         >
-          {EVENT.host} is hosting a full-day Diwali at {EVENT.venue}. Rangoli at sunrise, phuljhadis at night, mithai in between.
+          {EVENT.host} is hosting an all-night Diwali somewhere in Delhi (exact spot dropping soon). Rangoli at sunset, phuljhadis at night, mithai in between.
         </motion.p>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: INTRO_DELAY + 1.25 }} className="mt-8">
@@ -173,7 +163,7 @@ export default function Hero() {
       <Sticker dragArea={ref} rotate={-10} className="left-[4%] top-[20%] hidden bg-haldi md:block">no beige allowed 🚫</Sticker>
       <Sticker dragArea={ref} rotate={8} className="right-[5%] top-[26%] hidden bg-blush md:block">mithai unlimited 🍬</Sticker>
       <Sticker dragArea={ref} rotate={-4} className="bottom-[30%] right-[8%] hidden bg-kesari lg:block">drag me bestie ✦</Sticker>
-      <Sticker dragArea={ref} rotate={6} className="bottom-[34%] left-[7%] hidden bg-genda lg:block">8 nov · all day</Sticker>
+      <Sticker dragArea={ref} rotate={6} className="bottom-[34%] left-[7%] hidden bg-genda lg:block">1–2 nov · all night</Sticker>
 
       <motion.div style={{ y: yNear, x: xNear }} className="pointer-events-none absolute inset-x-0 -bottom-4 z-20 flex items-end justify-center gap-2 sm:gap-6">
         {FOREGROUND_DIYAS.map((size, i) => (

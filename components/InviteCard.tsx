@@ -124,7 +124,7 @@ export default function InviteCard() {
                   <br />
                   the Diya
                 </h3>
-                <p className="mt-3 text-[clamp(10px,2.6vw,13px)] font-semibold uppercase tracking-[0.25em] text-plum/80">& an all-day Diwali bash</p>
+                <p className="mt-3 text-[clamp(10px,2.6vw,13px)] font-semibold uppercase tracking-[0.25em] text-plum/80">& an all-night Diwali bash</p>
 
                 <div className="my-4 flex items-center gap-2 text-kesari" aria-hidden>
                   <span className="h-px w-8 bg-current" />

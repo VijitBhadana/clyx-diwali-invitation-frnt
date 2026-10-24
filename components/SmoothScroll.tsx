@@ -1,5 +1,6 @@
 "use client";
 
+import { cancelFrame, frame, type FrameData } from "framer-motion";
 import Lenis from "lenis";
 import { useEffect } from "react";
 
@@ -22,21 +23,28 @@ export function setScrollLocked(locked: boolean) {
 }
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
+  // Freeze the looping CSS animations (sparkles, flames, shimmer…) of sections that are off screen
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach((e) => e.target.toggleAttribute("data-offscreen", !e.isIntersecting)),
+      { rootMargin: "200px 0px" },
+    );
+    document.querySelectorAll("main > section, footer").forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const instance = new Lenis({ lerp: 0.09, smoothWheel: true });
     lenis = instance;
 
-    let frame = 0;
-    const loop = (time: number) => {
-      instance.raf(time);
-      frame = requestAnimationFrame(loop);
-    };
-    frame = requestAnimationFrame(loop);
+    // Drive Lenis from framer-motion's frame loop so scroll position and scroll-linked transforms update in the same frame
+    const update = ({ timestamp }: FrameData) => instance.raf(timestamp);
+    frame.update(update, true);
 
     return () => {
-      cancelAnimationFrame(frame);
+      cancelFrame(update);
       instance.destroy();
       lenis = null;
     };

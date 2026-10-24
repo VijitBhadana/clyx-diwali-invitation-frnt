@@ -1,12 +1,27 @@
 "use client";
 
-import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import { motion, useScroll, useSpring, useTransform, type MotionValue } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { SCHEDULE } from "@/lib/event";
 import Sparkles from "./art/Sparkles";
 import { SplitText } from "./ui/AnimatedText";
 
 const CARD_COLORS = ["bg-haldi", "bg-blush", "bg-genda", "bg-cream", "bg-rani", "bg-kesari", "bg-cream", "bg-haldi", "bg-blush", "bg-rani"];
+
+const SKY_STOPS = [0, 0.3, 0.55, 0.75, 1];
+const SKIES = [
+  "linear-gradient(180deg,#ff9a3c 0%,#ffd60a 100%)",
+  "linear-gradient(180deg,#ff6b1a 0%,#ffb627 100%)",
+  "linear-gradient(180deg,#e3173e 0%,#ff2e93 100%)",
+  "linear-gradient(180deg,#5b1a8a 0%,#c0267a 100%)",
+  "linear-gradient(180deg,#12031c 0%,#3b0d5c 100%)",
+];
+
+/** One sky gradient fading in over the previous one — opacity is GPU-cheap, unlike repainting a full-screen gradient every frame. */
+function SkyLayer({ progress, index }: { progress: MotionValue<number>; index: number }) {
+  const opacity = useTransform(progress, [SKY_STOPS[index - 1], SKY_STOPS[index]], [0, 1]);
+  return <motion.div style={{ opacity, background: SKIES[index] }} className="absolute inset-0" aria-hidden />;
+}
 
 /**
  * Pinned section that scrolls sideways through the schedule.
@@ -38,17 +53,6 @@ export default function DayPlan() {
   const progress = useSpring(scrollYProgress, { stiffness: 110, damping: 26, restDelta: 0.001 });
 
   const x = useTransform(progress, [0, 1], [0, -distance]);
-  const sky = useTransform(
-    progress,
-    [0, 0.3, 0.55, 0.75, 1],
-    [
-      "linear-gradient(180deg,#ff9a3c 0%,#ffd60a 100%)",
-      "linear-gradient(180deg,#ff6b1a 0%,#ffb627 100%)",
-      "linear-gradient(180deg,#e3173e 0%,#ff2e93 100%)",
-      "linear-gradient(180deg,#5b1a8a 0%,#c0267a 100%)",
-      "linear-gradient(180deg,#12031c 0%,#3b0d5c 100%)",
-    ],
-  );
   const orbX = useTransform(progress, [0, 1], ["6vw", "86vw"]);
   const orbY = useTransform(progress, [0, 0.5, 1], ["34vh", "10vh", "30vh"]);
   const orbColor = useTransform(progress, [0, 0.55, 0.75, 1], ["#fff3b0", "#ffb627", "#ffd6e8", "#fff6e5"]);
@@ -61,7 +65,10 @@ export default function DayPlan() {
 
   return (
     <section id="day" ref={sectionRef} style={{ height: distance ? distance + viewport : "500vh" }} className="relative">
-      <motion.div style={{ background: sky }} className="sticky top-0 h-[100svh] overflow-hidden">
+      <div style={{ background: SKIES[0] }} className="sticky top-0 h-[100svh] overflow-hidden">
+        {SKIES.slice(1).map((_, i) => (
+          <SkyLayer key={i} progress={progress} index={i + 1} />
+        ))}
         <motion.div style={{ opacity: starsOpacity }} className="absolute inset-0">
           <Sparkles count={60} seed={33} />
         </motion.div>
@@ -129,7 +136,7 @@ export default function DayPlan() {
             <motion.div style={{ scaleX: lineScale }} className="h-full origin-left rounded-full bg-gradient-to-r from-plum via-rani to-haldi" />
           </div>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }

@@ -18,7 +18,7 @@ const vibes = Great_Vibes({ subsets: ["latin"], weight: "400", variable: "--font
 
 export const metadata: Metadata = {
   title: `${EVENT.name} — You're Invited`,
-  description: `${EVENT.host} invites you to an all-day Diwali bash on ${EVENT.dateLabel}. Pick your fit, drop your pics, RSVP.`,
+  description: `${EVENT.host} invites you to an all-night Diwali bash, ${EVENT.dateLabel}, in Delhi. Pick your fit, drop your pics, RSVP.`,
 };
 
 export const viewport: Viewport = {

@@ -43,7 +43,11 @@ export function LanternField({ count = 8, seed = 1, depth = 1 }: { count?: numbe
   return (
     <div className="pointer-events-none absolute inset-0" aria-hidden>
       {lanterns.map((l, i) => (
-        <div key={i} className="absolute" style={{ left: `${l.left}%`, top: `${l.top}%`, opacity: d.opacity, filter: d.blur ? `blur(${d.blur}px)` : undefined }}>
+        <div
+          key={i}
+          className="absolute"
+          style={{ left: `${l.left}%`, top: `${l.top}%`, opacity: d.opacity, "--lantern-blur": d.blur ? `blur(${d.blur}px)` : undefined } as React.CSSProperties}
+        >
           <Lantern size={l.size} style={{ "--dur": `${l.dur}s`, "--delay": `${l.delay}s` } as React.CSSProperties} />
         </div>
       ))}

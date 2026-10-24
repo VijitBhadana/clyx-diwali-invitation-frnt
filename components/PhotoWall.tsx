@@ -43,7 +43,7 @@ function Polaroid({ photo, onOpen, index }: { photo: Photo; onOpen: () => void; 
     >
       <span className="absolute -top-3 left-1/2 h-6 w-16 -translate-x-1/2 rotate-[-3deg] bg-haldi/80" aria-hidden />
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={photo.url} alt={photo.caption || `Photo by ${photo.uploader}`} loading="lazy" className="w-full rounded-sm object-cover" />
+      <img src={photo.url} alt={photo.caption || `Photo by ${photo.uploader}`} loading="lazy" decoding="async" className="w-full rounded-sm object-cover" />
       {photo.caption && <p className="mt-3 font-script text-2xl leading-tight">{photo.caption}</p>}
       <p className="mt-1 text-xs font-bold uppercase tracking-wider text-plum/60">
         {photo.uploader} · {timeAgo(photo.createdAt)}
@@ -70,7 +70,9 @@ export default function PhotoWall() {
 
   const load = useCallback(async () => {
     try {
-      setPhotos(await api.photos());
+      const next = await api.photos();
+      // the 30s poll usually returns the same list — keep the old array so the gallery doesn't re-render
+      setPhotos((prev) => (prev.length === next.length && prev.every((p, i) => p.id === next[i].id) ? prev : next));
       setLoadError(null);
     } catch (e) {
       setLoadError((e as Error).message);

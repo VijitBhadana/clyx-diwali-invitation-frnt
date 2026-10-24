@@ -46,7 +46,6 @@ function Confetti({ burst }: { burst: number }) {
 export default function Rsvp() {
   const [name, setName] = useGuestName();
   const [attending, setAttending] = useState<Attending>("yes");
-  const [plusOnes, setPlusOnes] = useState(0);
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
@@ -71,10 +70,10 @@ export default function Rsvp() {
     setSaving(true);
     setMessage(null);
     try {
-      await api.rsvp({ name: name.trim(), attending, plusOnes: attending === "no" ? 0 : plusOnes, message: note.trim() || undefined });
+      await api.rsvp({ name: name.trim(), attending, plusOnes: 0, message: note.trim() || undefined });
       setMessage({
         ok: true,
-        text: attending === "yes" ? "ur on the list bestie 🪔 see u at sunrise" : attending === "maybe" ? "noted! we'll save u a ladoo just in case" : "we'll miss u 😭 send pics of ur own diyas",
+        text: attending === "yes" ? "ur on the list bestie 🪔 see u on 1st nov" : attending === "maybe" ? "noted! we'll save u a ladoo just in case" : "we'll miss u 😭 send pics of ur own diyas",
       });
       if (attending !== "no") setBurst((b) => b + 1);
       load();
@@ -137,28 +136,6 @@ export default function Rsvp() {
               </motion.button>
             ))}
           </div>
-
-          <AnimatePresence initial={false}>
-            {attending !== "no" && (
-              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
-                <p className="mt-6 font-display text-sm font-extrabold uppercase tracking-[0.2em] text-rani">bringing anyone?</p>
-                <div className="mt-2 flex items-center gap-4">
-                  <button type="button" onClick={() => setPlusOnes((n) => Math.max(0, n - 1))} className="h-12 w-12 rounded-full border-2 border-plum bg-white text-2xl font-black" aria-label="Fewer guests">
-                    –
-                  </button>
-                  <AnimatePresence mode="popLayout" initial={false}>
-                    <motion.span key={plusOnes} initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 20, opacity: 0 }} className="w-10 text-center font-display text-4xl font-extrabold">
-                      {plusOnes}
-                    </motion.span>
-                  </AnimatePresence>
-                  <button type="button" onClick={() => setPlusOnes((n) => Math.min(10, n + 1))} className="h-12 w-12 rounded-full border-2 border-plum bg-haldi text-2xl font-black" aria-label="More guests">
-                    +
-                  </button>
-                  <span className="font-serif text-lg italic text-plum/70">{plusOnes === 0 ? "just me" : `+${plusOnes} with me`}</span>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
 
           <label className="mt-6 block font-display text-sm font-extrabold uppercase tracking-[0.2em] text-rani" htmlFor="rsvp-note">
             leave a note for the wall
